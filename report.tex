@@ -13,7 +13,7 @@
 \lstset{language=python}
 \begin{document}
 
-\title{The Mitar Method of Ultimate Fairness}
+\title{Peer-to-Peer Voting Scheme}
 \author{\alignauthor Mitar Milutinovi\'{c} and Valkyrie Savage\\
 \affaddr{Computer Science Division\\University of California, Berkeley} \\
 \email{mitar@tnode.net valkyrie@eecs.berkeley.edu}\\
@@ -26,7 +26,7 @@
 
 \section{Abstract}
 
-We designed a voting schema which allows a group of people to better decide on a common opinion about an issue. Currently,
+We designed a voting scheme which allows a group of people to better decide on a common opinion about an issue. Currently,
 the most used approach is to simply count number of votes against and for, while not taking into account people who do
 not cast a vote. Our approach is to have each person define delegates whose votes will be counted when he/she does not
 vote him/herself. In this way we get a social network, a trust network, between users which can be
@@ -34,29 +34,217 @@ used to transitively compute missing votes. We believe such a result better repr
 
 \section{Introduction}
 
-Something will go here.
+Currently the most common way of a group decision-making is voting with simple vote counting, determining the result by
+majority. Such a scheme is easy to understand and implement, but the question is if it does the most important thing
+in the best possible way. Namely, the main purpose of a group decision-making scheme is to find the result which would
+satisfy the whole group the most. In practice, issues arises because only a small part of the whole group participate
+in the decision making, namely by casting a vote. Decisions are thus based on opinions of this smaller part and despite
+others not participating in the decision-making they still might have an opinion or a general preference based on their
+values, even if they do not know exactly which voting option best satisfies their values. The reason for this is often
+lack of the time or knowledge necessary to make an informed decision.
 
-\section{Related Work}
+In this paper we address this issue with a novel group decision-making scheme which, when determining the outcome of
+the decision-making process, takes into account the social network of the group and relationships between members.
+In short, it allows members to delegate their votes to one or more other members. These delegations are used to infer
+the missing vote when the member does not vote him- or herself. Such delegations are transitive and form a kind of
+social network between members.
 
-\begin{tabular}{p{1.75cm} || p{1.75cm} | p{1.75cm} | p{1.75cm} | p{1.75cm} | p{1.75cm} | p{1.75cm} | p{1.75cm}}
-   & Helios & Liquid Feedback & Schulze Method & Yamakawa, et al. & Smartocracy & Anderson, et al. & MM \\
-  \hline \hline
-  delegation & no & yes & no & yes & yes & ande & yes \\
-  \hline
-  ranking & no & no & yes & no & no & ande & no \\
-  \hline
-  runtime & helios & lf & sm & y & sma & ande & mm \\
-  \hline
-  satisfactory result & helios & lf & sm & y & sma & ande & mm \\
-  \hline
-  secure & yes & yes? & depends & no & yes & ande & yes \\
-  \hline
-  secret & yes & no & depends & no & yes & ande & yes \\
-  \hline
-  illustration & \input{heliosillustration} & lf & sm & y & sma & ande & mm \\
-  \hline
-\end{tabular}
+The idea falls into the more general idea of proxy voting or voting with delegation.  In the following section we
+analyze existing proposals inside this space. After that, we present our proposal in more detail, comparing it with
+existing proposals.  We analyze its runtime and data structures.  Finally, we conclude with suggestions for future work.
+
+\section{Related work}
+
+\subsection{Smartocracy}
+
+Smartocracy is a system implemented by a group of researchers and tested in a beta period with several users from their
+institutions.  They implemented a trust-driven social network for decision making along with three different algorithms
+for determining which problem solutions were the most desirable by the collective: these three algorithms were direct
+democracy, dynamically distributed democracy (DDD), and proxy voting.  Direct democracy is exactly as it sounds;
+a person's vote is thrown away if s/he does not cast a ballot.  DDD allows users to designate a single other person
+who is given the power to use their voting influence in the case that they do not cast a ballot.  The proxy voting
+algorithm redistributes voting influence based on incoming edges at each node at the beginning of each vote.  That
+is, at step 0 everyone receives an equal amount of voting power, then at step 1 voters who are trusted by other
+voters are given additional voting influence equal to all the voting influence of the people who trust them.
+
+Vote delegation is transitive such that if Alice does not vote and has delegated her vote to Bob, and Bob does not
+vote but has delegated his vote to Cathy, then Cathy has the power to vote with the influence commanded by Alice and Bob.
+Delegation is done in general rather than by domain, such that a person who you ``trust'' is implicitly trusted in all
+voting situations.
+
+Under all algorithms, solutions voted on by participants can be weighted: e.g. Alice can delegate 40\% of her vote to
+solution 1 and 60\% to solution 2.  The solution with the most vote weight at the end of the vote wins.  There is
+only a single vote, and no consideration is given to a situation in which there is a cycle of non-voters who trust each other.
+
+\subsection{Delegative Democracy}
+
+Delegative Democracy is an idea, rather than an implemented system, proposed by Bryan Ford.  This system offers voters the
+choice of being an active delegate or a passive delegator.  In the first case, they exercise their voting power on their own,
+along with any delegated to them.  In the second case, they select one other person to whom they delegate their full voting power.
+The system emphasizes exercise of voting strength rather than the current paradigm of winning or losing a seat.  Each person is
+initially given the same voting weight, and the final distribution of weights for members of the population depends upon the
+trust network they create.  It is understood that the privacy of non-voting (delegating) individuals is protected by this
+system so that they cannot be coerced into giving their vote to particular delegates and that the privacy of voting (delegated)
+individuals is waived such that they are held accountable to those whose voting power they hold.
+
+This system offers significant flexibility in delegation.  It is possible to assign votes to different people depending on
+which forum the vote is taking place: e.g. votes on environmental policy can be delegated from Alice to Bob, while votes on
+space program funding can be delegated from Alice to Cathy.  Delegation is transitive as it propagates through the network.
+Cycles in delegation are resolved through delegation ranking.  Alice can state that her votes should go to Bob, but if that is
+not possible for some reason (e.g. Bob has delegated his votes to Alice and no one else), Alice can state that her votes go to
+Cathy instead.  If ranking does not resolve a cycle, all the voting power of the delegates in the cycle are discarded.  After
+delegation resolution, a single majority vote based on voting strength determines the outcome.
+
+\subsection{Toward Delegated Democracy}
+
+The Toward Delegated Democracy paper describes two novel methods of determining the outcome of a vote based on a trust-based
+social network.  Voters create trust connections to other voters in a multiple transitive delegation system in which voters
+delegate their vote to one or many others in general rather than by domain.  The transitive nature of this voting graph is
+described by a falloff: i.e. if Alice delegates her vote to Bob and Bob delegates his vote to Cathy, Cathy receives 1 unit of
+vote from Bob plus $1 \cdot (1-\mathrm{falloff})$ units of vote from Alice.  This is an attempt to quantify the non-transitive
+nature of value systems and trust connections.
+
+All voters are initialized with equal voting power which is distributed through the network based on the trust edges.  Voting
+is expected to be performed cyclically; i.e. when a proposal is made, voters vote on it, and as discussion about the proposal
+continues, they are free to change their votes.  This is a departure from the traditional voting process and the process
+described in all the previous papers.
+
+The real contributions of this paper lie in their outcome estimation algorithms.  Based on the votes of a few voters and the
+created trust graph, they can estimate the outcome of the vote.  They also propose a system in which voters who have the most
+trust-based voting power and the weakest delegation relations (e.g., if Bob and Cathy have the most voting power of anyone else,
+we do not select them both if Bob delegates his power to Cathy) are selected from the social graph and asked to vote: based on
+the selection mechanism, they are supposed to be the best representatives of the whole voter community.
+
+\subsection{Trust-based Recommendation Systems: An Axiomatic Approach}
+
+%Can you delegate to multiple people?
+%Can you delegate by weight?
+%Can you delegate by domain?
+%Is it transitive?
+%Does it handle cycles in some specific way?
+%How is voting power determined?
+%Is there a feedback loop or only a single vote?
+%Was the system implemented?
+
+\subsection{A Voting System for Internet-Based Democracy (Liquid Democracy)}
+
+Liquid Democracy focuses on an iterative voting system in which voters can change their votes at any time in order to show
+their approval or disapproval of an idea or policy.  This system is based upon a social game (i.e., the prisoner's dilemma)
+in which voters identify themselves as part of the group or not.  Voting is performed with transitive delegation (which is
+domain-insensitive), but is resolved as a series of voting vectors.  A person has a total of $+1$ voting power, but can
+assign $-1$ or $+1$ to all measures being voted upon (such that the sum of all votes totals to $+1$), and the voting is
+arbitrated in order to ensure maximum happiness for the group based upon all voting vectors.  Since voting is continuous,
+voters can ``vote together'' to improve the strength of their combined vectors and achieve a more preferred outcome.  This
+is conducted per the Internet Voting System where voters' voting vectors are represented in n-dimensional space and match up
+with points on an n-sphere.  The vectors are added in the usual fashion and the outcomes are determined by their sum.
+
+The main advantage of this system is that it was implemented into multiple software solutions and it is used actively by
+various activist groups and the most prominently by the Pirate Party in Germany. The informal feedback we gathered from
+their users is that while theory is interesting, user experience of using the software is bad because of too complex
+user interface which exposes many of underlying principles but makes it hard to use for their non-technical users.
+This shows that such delegation schemes are in general more complex and harder to understand and simplicity is something we
+must have in mind when designing one.
+
+\section{Peer-to-peer Voting Scheme}
+
+In designing our scheme we approached the issue from the other direction. We see voting as expressing the opinions of
+people. When not everybody votes, the question is what are opinions of people who have not voted and how to include
+such opinions in the final result. Currently, in commonly used voting schemes such opinions are simply discarded.
+We approached the issue from a machine learning perspective, seeing this problem as a prediction problem. We have a set
+of known values (votes) and we would like to infer the unknown values (votes) from them. When deciding which data to
+use we decided to use social network and trust relationships between people based on our anecdotal observation that
+people tend to ask their friends how to vote when they themselves do not have a firm opinion on the issue. In our scheme,
+we are formalizing this and making it explicit, thus simplifying and streamlining this process, making it scalable and
+less-time consuming.
+
+We decided to design a theoretical framework of a general process for inferring of opinions from whole population for
+those who have not voted. How are those cast and inferred votes combined is not defined by our scheme, but for the
+sake of discussion we assume that they are seen as equal and the final result is computed in the same manner as when
+only cast votes would be present.
+
+In our scheme members can delegate to arbitrary number of other members and assign each delegate an arbitrary portion
+of their total voting strength. Our scheme is orthogonal to the way in which members cast their vote. It can be simple
+yes/no or for/against decision, multiple option decision, or a ranking of options. All that is required is that votes has a
+defined way to combine themselves from multiple delegates based on their ratios.
+
+Our scheme is a two-stage process. In the first stage every member of a group chooses zero or more other members whom she
+trusts and would delegate her voting decision to in the case she does not cast a vote herself. If she chooses nobody and
+does not vote, her vote is discarded. If she chooses one or more delegates and does not vote, her vote is inferred from
+her delegates in the chosen ratios. She can also declare that she wants part of her vote inferred from her delegates,
+even if she does vote herself.
+
+We present some examples. We have three members, Alice, Bob and Cathy. Alice can decide to delegate like this:
+
+$$(\mathrm{Alice}, *)$$
+
+This is a default which means her vote counts only if she casts a vote.
+
+$$(\mathrm{Alice}, *), (\mathrm{Bob}, 0.4), (\mathrm{Cathy}, 0.6)$$
+
+If Alice does not cast a vote, her vote is inferred $0.4$ from Bob and $0.6$ from Cathy. If she casts a vote, only her
+vote counts.
+
+$$(\mathrm{Alice}, 0.9), (\mathrm{Bob}, 0.04), (\mathrm{Cathy}, 0.06)$$
+
+If she casts a vote then $0.9$ of her vote is counted, but still $0.04$ and $0.06$ is inferred from $B$ and $C$, respectively.
+If she does not cast a vote, then her vote is inferred from Bob and Cathy in $0.4$ and $0.6$ shares.
+
+These weighted delegation edges define a (social) network between members which is a kind of ``web of trust'' or
+``trust network''. We can see it as a directed graph between (hopefully) everybody. We call this a ``delegation network''.
+
+When a decision is needed, votes are cast. This is the second stage of the process. This is done in any manner wanted and
+traditionally used in voting. But, it is not required that everybody casts a vote and missing votes are not
+simply discarded. For those who do not cast a vote, their vote is inferred. This is done transitively. So in the final example
+above, if Bob does not cast a vote, then Bob's $0.4$ share of Alice's vote is inferred from Bob's own delegations. In the
+case that none of Bob's delegates (transitively) casts a vote, then Alice's vote is wholly inferred from Cathy's vote.
+
+This last possibility is an unfortunate one as it means we have lost the votes of Bob and all Bob's delegates who have not
+voted, transitively. This is a very unlikely event (based on the six degrees of separation idea) and possible only if we allow
+members to not choose any delegates (we could change default delegation or make it compulsory to delegate in the first phase).
+
+\section{Analysis}
+
+We find such definition simple and general. From the point of view of the member she just have to once define delegates and ratios
+between them and the scheme takes care of the rest. Depending on the use case of our scheme, members might have to define
+multiple sets of delegates for various domains they are voting in.
+
+``Casting a vote'' itself is not defined on purpose. It can be in any manner wanted and to make if easier for people possibly
+in the form they are already familiar with. Our scheme deals only with a question of how to infer missing votes. It augments
+existing voting schemes.
+
+The additional data, the delegation network, we gather in the first stage allows us to infer missing votes in the second stage.
+We implemented it as a graph-walking algorithm in Python. Code is available in the appendix.
+
+
+
+%Something clever that we proved about it - Arrow’s Impossibility Theorem
+
+%Arrow’s Impossibility Theorem states that, when voters have three or more distinct alternatives (options), no rank order voting system can convert the ranked preferences of individuals into a community-wide (complete and transitive) ranking while also meeting a specific set of criteria. These criteria are called unrestricted domain, non-dictatorship, Pareto efficiency, and independence of irrelevant alternatives.  We claim that we are immune to this (?)
+
+
+Our scheme is inherently non-anonymous. For every vote it is required that it is known from whom it is so that inferred votes can be calculated. The votes do not need to be public, but they still have to be stored non-anonymously. But to really mitigate the issue of understanding why somebody lost and somebody won also the votes should be made public so that people would be able to recalculate results by themselves. Moreover, a members' social networks is revealed. Especially the very important type of a social network -- the network of influence between people. This is an additional hit on their privacy by the proposed scheme.
+
+
+\section{Comparison}
+
+
+\section{Future work}
+
+The future research should privacy issues with our scheme. For example, some way of distributed computing where only people one-hop away from the voter would know how she cast a vote, but in further hops only a combined vote would be seen. The other way is to develop some new cryptographic primitives which would allow privacy on the one hand and verifiability on the other. We do not really need to have public votes, just computability/verifiability of the results.
+
+Additionally, an analysis of possible possible misuses of the scheme or issues with it should be done. Can it be played by a small number of members? Is it stable (how much, in general, does the result change when one person changes her vote)?
+
+% as we described, we see this is a general prediction problem of missing votes - it would be interesting to try other existing
+% (novel and traditional) approaches to infer missing votes
 
 \bibliographystyle{abbrv}
 \bibliography{mm}
+
+\appendix{Python implementation}
+
+% TODO: Probably one column?
+% TODO: Include verbatim/code
+% TODO: Remove comments
+%\include{voting.py}
+
 \end{document}
