@@ -174,16 +174,13 @@ her delegates in the chosen ratios. She can also declare that she wants part of 
 even if she does vote herself.
 
 We present some examples. We have three members, Alice, Bob and Cathy. Alice can decide to delegate like this:
-
 $$(\mathrm{Alice}, *)$$
 
 This is a default which means her vote counts only if she casts a vote.
-
 $$(\mathrm{Alice}, *), (\mathrm{Bob}, 0.4), (\mathrm{Cathy}, 0.6)$$
 
 If Alice does not cast a vote, her vote is inferred $0.4$ from Bob and $0.6$ from Cathy. If she casts a vote, only her
 vote counts.
-
 $$(\mathrm{Alice}, 0.9), (\mathrm{Bob}, 0.04), (\mathrm{Cathy}, 0.06)$$
 
 If she casts a vote then $0.9$ of her vote is counted, but still $0.04$ and $0.06$ is inferred from $B$ and $C$, respectively.
