@@ -211,36 +211,34 @@ multiple sets of delegates for various domains they are voting in.
 existing vote casting schemes.
 
 In social choice theory, Arrow's impossibility theorem\cite{arrow} states limits on how ranked preferences of individuals are
-converted into a community-wide (complete and transitive) ranking and question posses itself: how does this relate to our
-scheme. We can observe that our scheme is orthogonal to this issue as it does not deal directly with the question of aggregating
+converted into a community-wide (complete and transitive) ranking and this begs the question: how does this relate to our
+scheme? We can observe that our scheme is orthogonal to this issue as it does not deal directly with the question of aggregating
 the votes of individuals into a common decision, but just infers missing votes enabling any approach of aggregation to work
-arguably better.
+arguably better.  Ideally unsolvable conflicts such as those described by Arrow (in which $A > B, B > C, C > A$) could be resolved through the addition of iteration to our voting scheme, as in Liquid Democracy \cite{liquiddem}.
 
-The additional data, the delegation network, we gather in the first stage allows us to infer missing votes in the second stage.
+The additional data we gather in the first stage, the delegation network, allows us to infer missing votes in the second stage.
 We implemented it as a graph-walking algorithm in Python. Code is available in the appendix.
 
-Our scheme is inherently non-anonymous. For every vote it is required that it is known from whom it is so that inferred votes
-can be calculated. The votes do not need to be public, but they still have to be stored non-anonymously. But to really mitigate
-the issue of understanding why somebody lost and somebody won also the votes should be made public so that people would be able
-to recalculate results by themselves. Moreover, a members' social networks is revealed. Especially the very important type of a
-social network -- the network of influence between people. This is an additional hit on their privacy by the proposed scheme.
+Our scheme is inherently non-anonymous. We must know whose vote is whose so that uncast votes
+can be inferred from the non-anonymous delegation network. The votes do not need to be public, but they still have to be stored non-anonymously.  (To assist voters in understanding why the loser lost and the winner won, the votes could be made public.  This allows voters to recalculate the results.) Moreover, a member's social network is revealed. This is a very private sort of
+social network -- the network of influence between people. Such is additional limitation of our proposed scheme with respect to privacy.
 
 \section{Future work}
 
-The future research should privacy issues with our scheme. For example, some way of distributed computing where only people
-one-hop away from the voter would know how she cast a vote, but in further hops only a combined vote would be seen. The other
-way is to develop some new cryptographic primitives which would allow privacy on the one hand and verifiability on the other.
+Future research can address these privacy issues. For example, it would be possible to build a distributed system in which only people
+one-hop away from the voter know how she cast her vote, but in further hops only an aggregate and anonymized vote is seen. Another
+option is to develop some new cryptographic primitives which allow privacy on the one hand and verifiability on the other.
 We do not really need to have public votes, just computability/verifiability of the results.
 
-Additionally, an analysis of possible possible misuses of the scheme or issues with it should be done. Can it be played by a
-small number of members? Is it stable (how much, in general, does the result change when one person changes her vote)?
+Additionally, an analysis of possible possible misuses of the scheme or issues with it should be performed. Can it be used by a
+small number of members? Is it stable, or how much, in general, does the result change when one person changes her vote?
 
 As we described, we see this is a general prediction problem of inferring of missing votes. It would be interesting to try
 other existing (novel and traditional) approaches to predict missing data and use possible other sources of relevant data,
 not just a trust network.
 
 Someday, we would also like to convince Facebook that we are geniuses and that they should use their social network for the
-power of good voting.  It may be possible to \emph{infer} voters' trust networks based on their real social networks and the
+power of good voting.  It may be possible to \emph{infer} voters' trust networks and link strengths based on their real social networks and the
 interactions performed via applications like Facebook.  This would allow skipping the first stage of our scheme (in which voters
 explicitly delegate their votes) while not endangering the voting power of any non-voters.
 
