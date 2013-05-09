@@ -83,7 +83,7 @@ choice of being an active delegate or a passive delegator.  In the first case, t
 along with any delegated to them.  In the second case, they select one other person to whom they delegate their full voting power.
 The system emphasizes exercise of voting strength rather than the current paradigm of winning or losing a seat.  Each person is
 initially given the same voting weight, and the final distribution of weights for members of the population depends upon the
-trust network they create.  It is understood that the privacy of non-voting (delegating) individuals is protected by this
+trust network.  It is understood that the privacy of non-voting (delegating) individuals is protected by this
 system so that they cannot be coerced into giving their vote to particular delegates and that the privacy of voting (delegated)
 individuals is waived such that they are held accountable to those whose voting power they hold.
 
@@ -115,17 +115,6 @@ trust-based voting power and the weakest delegation relations (e.g., if Bob and 
 we do not select them both if Bob delegates his power to Cathy) are selected from the social graph and asked to vote: based on
 the selection mechanism, they are supposed to be the best representatives of the whole voter community.
 
-\subsection{Trust-based Recommendation Systems: An Axiomatic Approach}
-
-%Can you delegate to multiple people?
-%Can you delegate by weight?
-%Can you delegate by domain?
-%Is it transitive?
-%Does it handle cycles in some specific way?
-%How is voting power determined?
-%Is there a feedback loop or only a single vote?
-%Was the system implemented?
-
 \subsection{A Voting System for Internet-Based Democracy (Liquid Democracy)}
 
 Liquid Democracy focuses on an iterative voting system in which voters can change their votes at any time in order to show
@@ -144,6 +133,18 @@ their users is that while theory is interesting, user experience of using the so
 user interface which exposes many of underlying principles but makes it hard to use for their non-technical users.
 This shows that such delegation schemes are in general more complex and harder to understand and simplicity is something we
 must have in mind when designing one.
+
+\subsection{Trust-based Recommendation Systems: An Axiomatic Approach}
+
+The trust-based recommendations paper deals with the theory of recommendation systems, i.e. systems in which the end goal is to recommend new items for a user given her preferences and information about whose preferences she trusts.  The authors describe five axioms which may be desirable in trust-based recommendation systems:
+\begin{enumerate}
+	\item Symmetry (isomoorphic graphs result in isomorphic recommendations)
+	\item Positive response (if a node with a netural recommendation is attached to a + voter, the recommendation moves from neutral to +)
+	\item Independence of Irrelevant Stuff (a node's recommendation does not depend on nodes it cannot reach in the trust web)
+	\item Neighborhood Consensus (if a nonvoters neighbors are all +, if that node votes + its neighbors recommendations do not change)
+	\item Transitivity (the "trusts more" relationship is transitive)
+\end{enumerate}
+And they go on to prove that not all 5 are satisfiable within a single recommendation system, but that each subset of 4 uniquely leads to a recommendation system.  They suggest relaxations and replacements for axiom 5 which also lead to unique recommendation systems.  The authors offer a theoretical framework for the continued study of systems in which a user's preferences are inferred through explicit or implict trust relationships.
 
 \section{Peer-to-peer Voting Scheme}
 
