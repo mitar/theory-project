@@ -235,10 +235,14 @@ We do not really need to have public votes, just computability/verifiability of 
 Additionally, an analysis of possible possible misuses of the scheme or issues with it should be done. Can it be played by a
 small number of members? Is it stable (how much, in general, does the result change when one person changes her vote)?
 
-Someday, we would also like to convince Facebook that we are geniuses and that they should use their social network for the power of good voting.  It may be possible to \emph{infer} voters' trust networks based on their real social networks and the interactions performed via applications like Facebook.  This would allow skipping phase one of our scheme (in which voters explicitly delegate their votes) while not endangering the voting power of any non-voters.
+As we described, we see this is a general prediction problem of inferring of missing votes. It would be interesting to try
+other existing (novel and traditional) approaches to predict missing data and use possible other sources of relevant data,
+not just a trust network.
 
-% as we described, we see this is a general prediction problem of missing votes - it would be interesting to try other existing
-% (novel and traditional) approaches to infer missing votes
+Someday, we would also like to convince Facebook that we are geniuses and that they should use their social network for the
+power of good voting.  It may be possible to \emph{infer} voters' trust networks based on their real social networks and the
+interactions performed via applications like Facebook.  This would allow skipping the first stage of our scheme (in which voters
+explicitly delegate their votes) while not endangering the voting power of any non-voters.
 
 \bibliographystyle{abbrv}
 \bibliography{references}
@@ -252,10 +256,5 @@ Someday, we would also like to convince Facebook that we are geniuses and that t
 
 \small
 \lstinputlisting{voting.py}
-
-% TODO: Probably one column?
-% TODO: Include verbatim/code
-% TODO: Remove comments
-%\include{voting.py}
 
 \end{document}
