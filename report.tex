@@ -151,24 +151,24 @@ And they go on to prove that not all 5 are satisfiable within a single recommend
 \section{Peer-to-peer Voting Scheme}
 
 In designing our scheme we approached the issue from the other direction. We see voting as expressing the opinions of
-people. When not everybody votes, the question is what are opinions of people who have not voted and how to include
-such opinions in the final result. Currently, in commonly used voting schemes such opinions are simply discarded.
-We approached the issue from a machine learning perspective, seeing this problem as a prediction problem. We have a set
-of known values (votes) and we would like to infer the unknown values (votes) from them. When deciding which data to
-use we decided to use social network and trust relationships between people based on our anecdotal observation that
-people tend to ask their friends how to vote when they themselves do not have a firm opinion on the issue. In our scheme,
-we are formalizing this and making it explicit, thus simplifying and streamlining this process, making it scalable and
-less-time consuming.
+people. When not everybody votes, the question is what are the opinions of non-voters and how can we include
+these opinions in the final result. Currently, in commonly-used voting schemes their opinions are simply discarded.
+We approached the issue from a machine learning perspective, seeing this as a prediction problem. We have a set
+of known values (votes) and would like to infer the unknown values (non-voter opinions) from them. When deciding which data to
+use we decided to use social network and trust relationships between people.  This is based on our anecdotal observations that
+people tend to ask their friends how to vote when they themselves do not have a firm opinion on an issue. In our scheme,
+we formalize this and make it explicit, thus simplifying and streamlining the process, making it scalable and
+less time-consuming.
 
-We decided to design a theoretical framework of a general process for inferring of opinions from whole population for
-those who have not voted. How are those cast and inferred votes combined is not defined by our scheme, but for the
-sake of discussion we assume that they are seen as equal and the final result is computed in the same manner as when
-only cast votes would be present.
+We decided to design a theoretical framework of a general process for inferring opinions from an entire population for
+those who have not voted. How votes and inferred votes are tallied is not defined by our scheme, but for the
+sake of discussion we assume that all votes are of equal weight and the final result is computed in the same manner as when
+only cast votes are tallied.
 
-In our scheme members can delegate to arbitrary number of other members and assign each delegate an arbitrary portion
-of their total voting strength. Our scheme is orthogonal to the way in which members cast their vote. It can be simple
-yes/no or for/against decision, multiple option decision, or a ranking of options. All that is required is that votes has a
-defined way to combine themselves from multiple delegates based on their ratios.
+In our scheme each member can delegate to an arbitrary number of other members, assigning each delegate an arbitrary fraction
+of her total voting strength. Our scheme is orthogonal to the way in which members cast their vote. It can be a simple
+yes/no or for/against decision, multiple option decision, or a ranking of options. All that is required is that votes have a
+definite way to combine themselves from multiple delegates based on their ratios.
 
 Our scheme is a two-stage process. In the first stage every member of a group chooses zero or more other members whom she
 trusts and would delegate her voting decision to in the case she does not cast a vote herself. If she chooses nobody and
@@ -192,37 +192,32 @@ If she does not cast a vote, then her vote is inferred from Bob and Cathy in $0.
 These weighted delegation edges define a (social) network between members which is a kind of ``web of trust'' or
 ``trust network''. We can see it as a directed graph between (hopefully) everybody. We call this a ``delegation network''.
 
-When a decision is needed, votes are cast. This is the second stage of the process. This is done in any manner wanted and
-traditionally used in voting. But, it is not required that everybody casts a vote and missing votes are not
+When a decision is needed, votes are cast. This is the second stage of the process. This is done in any manner settled on by the members and can be the same as in traditional voting. But, it is not required that everybody casts a vote and missing votes are not
 simply discarded. For those who do not cast a vote, their vote is inferred. This is done transitively. So in the final example
 above, if Bob does not cast a vote, then Bob's $0.4$ share of Alice's vote is inferred from Bob's own delegations. In the
 case that none of Bob's delegates (transitively) casts a vote, then Alice's vote is wholly inferred from Cathy's vote.
 
 This last possibility is an unfortunate one as it means we have lost the votes of Bob and all Bob's delegates who have not
 voted, transitively. This is a very unlikely event (based on the six degrees of separation idea) and possible only if we allow
-members to not choose any delegates (we could change default delegation or make it compulsory to delegate in the first phase).
+members to not choose any delegates (we could change the default delegation or make it compulsory for participants to delegate in the first phase).
 
 \section{Analysis}
 
-We find such definition simple and general. From the point of view of the member she just have to once define delegates and ratios
-between them and the scheme takes care of the rest. Depending on the use case of our scheme, members might have to define
+Our scheme's definition is simple and general. From the point of view of the member she just has to (once) select delegates and ratios
+between them, and then the scheme takes care of the rest. Depending on the use case of our scheme, members might have to define
 multiple sets of delegates for various domains they are voting in.
 
-``Casting a vote'' itself is not defined on purpose. It can be in any manner wanted and to make if easier for people possibly
-in the form they are already familiar with. Our scheme deals only with a question of how to infer missing votes. It augments
-existing voting schemes.
+``Casting a vote'' itself is not defined on purpose.  Our scheme deals only with a question of how to infer missing votes, thus augmenting
+existing vote casting schemes.
 
 The additional data, the delegation network, we gather in the first stage allows us to infer missing votes in the second stage.
 We implemented it as a graph-walking algorithm in Python. Code is available in the appendix.
-
-
 
 %Something clever that we proved about it - Arrow’s Impossibility Theorem
 
 %Arrow’s Impossibility Theorem states that, when voters have three or more distinct alternatives (options), no rank order voting system can convert the ranked preferences of individuals into a community-wide (complete and transitive) ranking while also meeting a specific set of criteria. These criteria are called unrestricted domain, non-dictatorship, Pareto efficiency, and independence of irrelevant alternatives.  We claim that we are immune to this (?)
 
-
-Our scheme is inherently non-anonymous. For every vote it is required that it is known from whom it is so that inferred votes can be calculated. The votes do not need to be public, but they still have to be stored non-anonymously. But to really mitigate the issue of understanding why somebody lost and somebody won also the votes should be made public so that people would be able to recalculate results by themselves. Moreover, a members' social networks is revealed. Especially the very important type of a social network -- the network of influence between people. This is an additional hit on their privacy by the proposed scheme.
+Our scheme is inherently non-anonymous. It is required to know whose vote is whose so that uncast votes can be inferred. Cast votes do not need to be public, but they still have to be stored non-anonymously. To assist in understanding why somebody lost and somebody won, the votes should be made public so that people would be able to recalculate results by themselves. Moreover, a member's social network is revealed. Especially the very important type of a social network -- the network of influence between people. This is an additional hit on their privacy by the proposed scheme.
 
 
 \section{Comparison}
@@ -233,6 +228,8 @@ Our scheme is inherently non-anonymous. For every vote it is required that it is
 The future research should privacy issues with our scheme. For example, some way of distributed computing where only people one-hop away from the voter would know how she cast a vote, but in further hops only a combined vote would be seen. The other way is to develop some new cryptographic primitives which would allow privacy on the one hand and verifiability on the other. We do not really need to have public votes, just computability/verifiability of the results.
 
 Additionally, an analysis of possible possible misuses of the scheme or issues with it should be done. Can it be played by a small number of members? Is it stable (how much, in general, does the result change when one person changes her vote)?
+
+Someday, we would also like to convince Facebook that we are geniuses and that they should use their social network for the power of good voting.  It may be possible to \emph{infer} voters' trust networks based on their real social networks and the interactions performed via applications like Facebook.  This would allow skipping phase one of our scheme (in which voters explicitly delegate their votes) while not endangering the voting power of any non-voters.
 
 % as we described, we see this is a general prediction problem of missing votes - it would be interesting to try other existing
 % (novel and traditional) approaches to infer missing votes
