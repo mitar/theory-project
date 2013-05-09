@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import math
 import random
 
@@ -35,7 +33,8 @@ class Person(Base):
 			name = u"P%d" % Person._last_id
 			Person._last_id += 1
 		self.name = name
-		self._delegates = [Delegate(self, float('inf'))] # Default is to trust yourself ultimately (but it could also be 1 here)
+		# Default is to trust yourself ultimately (but it could also be 1 here)
+		self._delegates = [Delegate(self, float('inf'))]
 
 	def __unicode__(self):
 		"""
@@ -77,7 +76,8 @@ class Person(Base):
 			for s in delegates:
 				if s.ratio == float('inf'):
 					if s.person != self:
-						raise ValueError("Invalid ratio: %f" % s.ratio) # Only a person herself can have a precedence before delegates
+						# Only a person herself can have a precedence before delegates
+						raise ValueError("Invalid ratio: %f" % s.ratio)
 				elif s.ratio <= 0 or s.ratio > 1:
 					raise ValueError("Invalid ratio: %f" % s.ratio)
 				else:
@@ -90,7 +90,8 @@ class Person(Base):
 					delegates_dict[s.person] = s
 			if missing_self:
 				raise ValueError("Delegates do not contain person herself.")
-			if abs(1 - sum) > 1e-10 and not (len(delegates_dict) == 1 and delegates_dict.values()[0].ratio == float('inf')):
+			if abs(1 - sum) > 1e-10 and not (len(delegates_dict) == 1 and \
+					delegates_dict.values()[0].ratio == float('inf')):
 				raise ValueError("Sum of all ratios is not 1 but %f" % sum)
 			self._delegates = delegates_dict.values()
 			self._delegates.sort(reverse=True)
@@ -107,7 +108,8 @@ class Delegate(Base):
 		Class constructor.
 
 		@param person: A person this delegate is.
-		@param ratio: A ratio of trust for this delegate. It has to be a number from (0, 1] or +infinity (only in the case a person and her surogate are the same person).
+		@param ratio: A ratio of trust for this delegate. It has to be a number from (0, 1] or
+		              +infinity (only in the case a person and her surogate are the same person).
 		"""
 
 		if (ratio <= 0 or ratio > 1) and ratio != float('inf'):
@@ -179,7 +181,8 @@ def delegate_vote(person, votes_dict, pending, visited=[]):
 	@param pending: A dictionary of pending persons to computer delegate vote for.
 	@param visited: A list of delegate votes we have already tried to compute.
 
-	@return: None if the delegate vote for this person is impossible to compute, an empty list if it is currently not possible to compute it or a list of computed votes
+	@return: None if the delegate vote for this person is impossible to compute, an empty list
+	         if it is currently not possible to compute it or a list of computed votes
 	"""
 
 	if person in votes_dict:
@@ -188,7 +191,8 @@ def delegate_vote(person, votes_dict, pending, visited=[]):
 
 	if person not in pending:
 		# This person does not exist in current population so we are unable to compute vote her
-		# This probably means that we removed the person from votes_dict and pending as her delegate vote was not computable
+		# This probably means that we removed the person from votes_dict and pending as her delegate
+		# vote was not computable
 		return None
 
 	delegates = person.delegates()
@@ -213,7 +217,8 @@ def delegate_vote(person, votes_dict, pending, visited=[]):
 	known_votes = [(r, vs) for (r, vs) in votes if vs is not None]
 
 	if len(known_votes) == 0:
-		# The delegate vote is impossible to compute for this person (we have a subgraph where we cannot do anything)
+		# The delegate vote is impossible to compute for this person
+		# (we have a subgraph where we cannot do anything)
 		return None
 
 	sum = 0
@@ -251,17 +256,20 @@ def delegate_version(persons, options, votes):
 	if len(persons) == 0:
 		raise ValueError("Zero-sized population")
 
-	# A dictionary of (currently) finalized votes, each person can have multiple votes, but the sum of all her votes has to be 1
+	# A dictionary of (currently) finalized votes, each person can have multiple votes,
+	# but the sum of all her votes has to be 1
 	votes_dict = {}
 
-	# Persons we have to calculate something for (who didn't vote or who do not use precedence before delegates)
+	# Persons we have to calculate something for
+	# (who didn't vote or who do not use precedence before delegates)
 	pending = {}
 
 	for v in votes:
 		assert v.ratio == 1
 		assert v.person not in votes_dict and v.person not in pending
 
-		if v.person.delegates()[0].ratio == float('inf') or len(v.person.delegates()) == 1: # Person has voted and has a precedence before delegates or it is the only one delegate defined
+		# Person has voted and has a precedence before delegates or it is the only one delegate defined
+		if v.person.delegates()[0].ratio == float('inf') or len(v.person.delegates()) == 1:
 			assert v.person.delegates()[0].person == v.person
 			votes_dict[v.person] = [v]
 		else:
@@ -326,7 +334,8 @@ def main():
 		p.delegates(delegates)
 	
 	# And some from population randomly vote
-	votes = sorted([Vote(p, random.choice(options)) for p in random.sample(persons, random.randint(1, size / 2))], key=lambda el: el.person)
+	random_sample = random.sample(persons, random.randint(1, size / 2))
+	votes = sorted([Vote(p, random.choice(options)) for p in random_sample], key=lambda el: el.person)
 	
 	for p in persons:
 		print u"%s:" % p.name

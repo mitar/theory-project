@@ -10,7 +10,7 @@
 \newcommand{\etc}{etc.\@\xspace}
 \newcommand{\Naive}{Na\"{i}ve\@\xspace}
 \newcommand{\naive}{na\"{i}ve\@\xspace}
-\lstset{language=python}
+\lstset{language=python,tabsize=2}
 \begin{document}
 
 \title{Peer-to-Peer Voting Scheme}
@@ -61,7 +61,7 @@ Smartocracy is a system implemented by a group of researchers and tested in a be
 institutions.  They implemented a trust-driven social network for decision making along with three different algorithms
 for determining which problem solutions were the most desirable by the collective: these three algorithms were direct
 democracy, dynamically distributed democracy (DDD), and proxy voting.  Direct democracy is exactly as it sounds;
-a person's vote is thrown away if s/he does not cast a ballot.  DDD allows users to designate a single other person
+a person's vote is thrown away if she does not cast a ballot.  DDD allows users to designate a single other person
 who is given the power to use their voting influence in the case that they do not cast a ballot.  The proxy voting
 algorithm redistributes voting influence based on incoming edges at each node at the beginning of each vote.  That
 is, at step 0 everyone receives an equal amount of voting power, then at step 1 voters who are trusted by other
@@ -238,7 +238,15 @@ Additionally, an analysis of possible possible misuses of the scheme or issues w
 \bibliographystyle{abbrv}
 \bibliography{mm}
 
-\appendix{Python implementation}
+\onecolumn
+
+\appendix
+\section{Python implementation}
+
+\vspace{1em}
+
+\small
+\lstinputlisting{voting.py}
 
 % TODO: Probably one column?
 % TODO: Include verbatim/code
