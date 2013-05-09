@@ -78,6 +78,12 @@ Under all algorithms, solutions voted on by participants can be weighted: e.g. A
 solution 1 and 60\% to solution 2.  The solution with the most vote weight at the end of the vote wins.  There is
 only a single vote, and no consideration is given to a situation in which there is a cycle of non-voters who trust each other.
 
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/DDD.png}
+\caption{In dynamically distributed democracy, voters are assigned additional voting power at the beginning of a vote, based on how many people trust them.}
+\end{figure}
+
 \subsection{Delegative Democracy}
 
 Delegative Democracy \cite{delegative} is an idea, rather than an implemented system, proposed by Bryan Ford.  This system offers voters the
@@ -96,6 +102,12 @@ Cycles in delegation are resolved through delegation ranking.  Alice can state t
 not possible for some reason (e.g. Bob has delegated his votes to Alice and no one else), Alice can state that her votes go to
 Cathy instead.  If ranking does not resolve a cycle, all the voting power of the delegates in the cycle are discarded.  After
 delegation resolution, a single majority vote based on voting strength determines the outcome.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/delegativedemocracy3.png}
+\caption{Delegative democracy allows voters to assign delegates of their votes (black lines) and secondary delegates (grey lines) in case of a delegation cycle in which no one casts a vote.}
+\end{figure}
 
 \subsection{Toward Delegated Democracy}
 
@@ -117,6 +129,12 @@ trust-based voting power and the weakest delegation relations (e.g., if Bob and 
 we do not select them both if Bob delegates his power to Cathy) are selected from the social graph and asked to vote: based on
 the selection mechanism, they are supposed to be the best representatives of the whole voter community.
 
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/tdd0.png}
+\caption{The Towards Delegated Democracy paper describes the non-transitive nature of trust, in which only 1-$\epsilon$ of the blue vote is transferred from the red delegate to the yellow delegate.}
+\end{figure}
+
 \subsection{A Voting System for Internet-Based Democracy (Liquid Democracy)}
 
 Liquid Democracy \cite{liquiddem} focuses on an iterative voting system in which voters can change their votes at any time in order to show
@@ -135,6 +153,12 @@ their users is that while theory is interesting, user experience of using the so
 user interface which exposes many of underlying principles but makes it hard to use for their non-technical users.
 This shows that such delegation schemes are in general more complex and harder to understand and simplicity is something we
 must have in mind when designing one.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/liquidfeedback2.png}
+\caption{Liquid Feedback allows voters to cast their vote as a vector on a sphere, and the result (black) is calculated based on all the voters' vectors.}
+\end{figure}
 
 \subsection{Trust-based Recommendation Systems: An Axiomatic Approach}
 
@@ -200,6 +224,12 @@ case that none of Bob's delegates (transitively) casts a vote, then Alice's vote
 This last possibility is an unfortunate one as it means we have lost the votes of Bob and all Bob's delegates who have not
 voted, transitively. This is a very unlikely event (based on the six degrees of separation idea) and possible only if we allow
 members to not choose any delegates (we could change the default delegation or make it compulsory for participants to delegate in the first phase).
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/us3.png}
+\caption{Our voting scheme allows precise definition of voting weight between delegates, and votes are counted recursively.}
+\end{figure}
 
 \section{Analysis}
 
